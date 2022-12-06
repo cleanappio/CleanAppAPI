@@ -1,0 +1,72 @@
+// Import the necessary modules and libraries
+const express = require('express');
+const Apigee = require('apigee-access');
+const bodyParser = require('body-parser');
+
+// Create a new Express app
+const app = express();
+
+// Use the Apigee middleware to validate API keys and JWT tokens
+app.use(Apigee.middleware({
+  orgName: 'my-organization',
+  appName: 'my-app',
+}));
+
+// Use the body parser middleware to parse JSON bodies in the request
+app.use(bodyParser.json());
+
+// Define a route for creating a new user
+app.post('/users', (req, res) => {
+  // Retrieve the user data from the request body
+  const { name, email, password } = req.body;
+
+  // Create a new user in the database using the provided data
+  const user = createUser(name, email, password);
+
+  // Return the created user
+  res.json(user);
+});
+
+// Define a route for retrieving a user by their ID
+app.get('/users/:id', (req, res) => {
+  // Retrieve the user ID from the request parameters
+  const { id } = req.params;
+
+  // Retrieve the user from the database using the provided ID
+  const user = getUser(id);
+
+  // Return the retrieved user
+  res.json(user);
+});
+
+// Define a route for updating an existing user
+app.put('/users/:id', (req, res) => {
+  // Retrieve the user ID from the request parameters
+  const { id } = req.params;
+
+  // Retrieve the updated user data from the request body
+  const { name, email, password } = req.body;
+
+  // Update the user in the database using the provided data
+  const user = updateUser(id, name, email, password);
+
+  // Return the updated user
+  res.json(user);
+});
+
+// Define a route for deleting an existing user
+app.delete('/users/:id', (req, res) => {
+  // Retrieve the user ID from the request parameters
+  const { id } = req.params;
+
+  // Delete the user from the database using the provided ID
+  deleteUser(id);
+
+  // Return a success message
+  res.send('User successfully deleted');
+});
+
+// Start the Express app
+app.listen(3000, () => {
+  console.log('CleanApp API listening on port 3000');
+});
